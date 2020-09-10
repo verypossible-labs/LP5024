@@ -15,7 +15,19 @@ defmodule LP5024.DeviceConfig do
     led_global_off: false
   ]
 
+  def put_key(i2c_bus, address, key, value) do
+    case get(i2c_bus, address) do
+      {:ok, config} -> put(i2c_bus, address, Map.put(config, key, value))
+      error -> error
+    end
+  end
 
+  def get_key(i2c_bus, address, key) do
+    case get(i2c_bus, address) do
+      {:ok, config} -> Map.get(config, key)
+      error -> error
+    end
+  end
 
   def put(i2c_bus, address, %__MODULE__{} = config) do
     I2C.write(i2c_bus, address, <<@register>> <> encode(config))
